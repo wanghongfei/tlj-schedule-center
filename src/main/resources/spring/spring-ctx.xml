@@ -9,4 +9,11 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
         >
 
+    <bean id="scheduleFactory" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+<!--        <property name="triggers">
+            <list>
+                <ref bean="doTime"/>
+            </list>
+        </property>-->
+    </bean>
 </beans>
