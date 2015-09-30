@@ -2,7 +2,6 @@ package com.taolijie.schedule.service.impl;
 
 import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.exception.InvalidJobNameException;
-import com.taolijie.schedule.job.RunOnceJob;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
 import org.quartz.*;
@@ -30,12 +29,20 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     @Qualifier("scheduleFactory")
     private Scheduler scheduler;
 
+    /**
+     * 添加并激活一个任务.
+     *
+     * @throws SchedulerException 任务调度出错
+     * @throws InvalidJobNameException job bean不存在
+     */
     @Override
     public void addJob(String id, String jobBeanName, Date startAt)
             throws SchedulerException, InvalidJobNameException {
 
+        // 根据beanName参数生成目标类的全限定名
         String clazzName = StringUtils.concat(0, "com.taolijie.schedule.job.", jobBeanName);
 
+        // 得到该类的class对象
         Class clazz = null;
         try {
             clazz = Class.forName(clazzName);
@@ -45,15 +52,18 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         }
 
 
+        // 创建job
         JobDetail jd = JobBuilder.newJob(clazz)
                 .withIdentity(id.toString(), Config.JOB_GROUP)
                 .build();
 
+        // 创建trigger
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(id, Config.TRIGGER_GROUP)
                 .startAt(startAt)
                 .build();
 
+        // 启动调度
         scheduler.scheduleJob(jd, trigger);
     }
 

@@ -3,23 +3,29 @@ package com.taolijie.schedule.job;
 import com.taolijie.schedule.service.ScheduleService;
 import org.quartz.*;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 /**
+ * 只执行一次的Job. Job执行完成后会自动删除自身。
  * Created by whf on 9/30/15.
  */
-@Component
-public class RunOnceJob implements Job, ApplicationContextAware {
-    private static ApplicationContext ctx;
+public abstract class RunOnceJob implements Job, ApplicationContextAware {
+    protected static ApplicationContext ctx;
 
     private static ScheduleService scheduleService;
 
+
+    /**
+     * 子类重写此方法，定义自己的业务逻辑
+     * @param context
+     * @throws JobExecutionException
+     */
+    abstract protected void doJob(JobExecutionContext context) throws JobExecutionException;
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("hello");
+        doJob(context);
 
         // 执行完成后马上删除任务本身
         try {
@@ -28,6 +34,14 @@ public class RunOnceJob implements Job, ApplicationContextAware {
             throw new JobExecutionException("delete job failed");
         }
     }
+
+
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        ctx = applicationContext;
+    }
+
 
     private void delJob(JobDetail jd) throws SchedulerException {
         String name = jd.getKey().getName();
@@ -39,10 +53,5 @@ public class RunOnceJob implements Job, ApplicationContextAware {
         }
 
         scheduleService.delJob(name);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        ctx = applicationContext;
     }
 }
