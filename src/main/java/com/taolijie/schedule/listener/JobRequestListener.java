@@ -1,6 +1,10 @@
 package com.taolijie.schedule.listener;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 import com.taolijie.schedule.constant.Config;
+import com.taolijie.schedule.exception.InvalidMessageException;
+import com.taolijie.schedule.model.MsgProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.Message;
