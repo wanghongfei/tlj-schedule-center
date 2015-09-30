@@ -6,6 +6,8 @@ import com.taolijie.schedule.job.RunOnceJob;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +22,7 @@ import java.util.Date;
  */
 @Service
 public class DefaultScheduleService implements ScheduleService, ApplicationContextAware {
+    public static Logger errLog = LoggerFactory.getLogger(Config.ERR_LOGGER);
 
     private static ApplicationContext ctx;
 
@@ -37,6 +40,7 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         try {
             clazz = Class.forName(clazzName);
         } catch (ClassNotFoundException e) {
+            errLog.error("invalid spring bean name:{}", clazzName);
             throw new InvalidJobNameException(clazzName);
         }
 
