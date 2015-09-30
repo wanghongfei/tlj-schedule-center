@@ -5,6 +5,7 @@ import org.quartz.*;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 /**
@@ -14,8 +15,8 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 public class Bootstrap {
     public static void main(String[] args) {
         ApplicationContext ctx = initCtx("spring/spring-ctx.xml");
+        triggerInit(ctx);
 
-        Scheduler scheduler = (Scheduler) ctx.getBean("scheduleFactory");
 
 /*        JobDetail jd = JobBuilder.newJob(TestJob.class)
                 .withIdentity("test-job", "group-1")
@@ -38,7 +39,6 @@ public class Bootstrap {
         }*/
 
 
-        ctx.getBean("sqlSessionFactory");
     }
 
 
@@ -47,9 +47,17 @@ public class Bootstrap {
      * @param conf
      * @return
      */
-    public static ApplicationContext initCtx(String conf) {
+    private static ApplicationContext initCtx(String conf) {
         ApplicationContext ctx = new ClassPathXmlApplicationContext(conf);
 
         return ctx;
+    }
+
+    private static void triggerInit(ApplicationContext ctx) {
+        Scheduler scheduler = (Scheduler) ctx.getBean("scheduleFactory");
+        ctx.getBean("sqlSessionFactory");
+
+        StringRedisTemplate rt = (StringRedisTemplate)ctx.getBean("redisTemplateForString");
+
     }
 }
