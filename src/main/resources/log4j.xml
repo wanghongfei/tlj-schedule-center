@@ -10,17 +10,15 @@
 		</layout>
 	</appender>
 
-	<!-- 错误日志写入到文件中 -->
-<!--	<appender name="ERROR-APPENDER" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="file" value="/data/taolijie/taolijie-error.log" />
+	<!-- 普通日志写入到文件中 -->
+	<appender name="info-appender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="/Users/whf/projects/tlj-schedule-center/logs/scheduler.log" />
 		<param name="append" value="true" />
 		<param name="encoding" value="UTF-8" />
-		<param name="threshold" value="error" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern"
-				   value="%X{requestId}%d %-5p %c - %m%n" />
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p: %c - %m%n" />
 		</layout>
-	</appender>-->
+	</appender>
 
 	<!-- 错误信息的logger -->
 <!--	<logger name="error">
@@ -30,6 +28,7 @@
 
 	<logger name="LOGGER">
 		<level value="debug" />
+       <appender-ref ref="info-appender" />
 	</logger>
 
 
@@ -46,14 +45,12 @@
 		<level value="info" />
 	</logger>
 
-	<logger name="org.springframework.web">
-		<level value="info" />
-	</logger>
 
 	<!-- Root Logger -->
 	<root>
 		<priority value="info" />
-		<appender-ref ref="console" />
+        <appender-ref ref="info-appender" />
+        <appender-ref ref="console" />
 	</root>
 	
 </log4j:configuration>

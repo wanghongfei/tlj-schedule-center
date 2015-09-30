@@ -14,6 +14,6 @@ public class JobRequestListener extends MessageListenerAdapter {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        log.info("received new message: {}", message.toString());
+        log.debug("received new message: {}", message.toString());
     }
 }
