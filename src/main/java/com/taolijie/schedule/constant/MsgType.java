@@ -11,7 +11,11 @@ public enum MsgType {
     /**
      * 指定日期执行
      */
-    DATE_STYLE(1);
+    DATE_STYLE(1),
+    /**
+     * 删除任务请求
+     */
+    DEL_JOB(2);
 
     private int code;
 
@@ -26,6 +30,9 @@ public enum MsgType {
 
             case 1:
                 return DATE_STYLE;
+
+            case 2:
+                return DEL_JOB;
 
             default:
                 return null;

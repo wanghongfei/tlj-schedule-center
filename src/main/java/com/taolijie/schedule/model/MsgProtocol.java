@@ -1,6 +1,7 @@
 package com.taolijie.schedule.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 通讯协议
@@ -23,6 +24,11 @@ public class MsgProtocol {
     private String cronExp;
 
     private Date exeAt;
+
+    /**
+     * 参数
+     */
+    private List<Object> parmList;
 
     public int getType() {
         return type;
@@ -50,6 +56,14 @@ public class MsgProtocol {
 
     public Date getExeAt() {
         return exeAt;
+    }
+
+    public List<Object> getParmList() {
+        return parmList;
+    }
+
+    public void setParmList(List<Object> parmList) {
+        this.parmList = parmList;
     }
 
     public void setExeAt(Date exeAt) {

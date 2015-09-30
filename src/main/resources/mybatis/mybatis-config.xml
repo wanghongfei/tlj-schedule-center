@@ -20,5 +20,6 @@
     <!-- Continue going here -->
 
     <mappers>
+        <mapper resource="mybatis/mapper/QuestAssignModelMapper.xml" />
     </mappers>
 </configuration>

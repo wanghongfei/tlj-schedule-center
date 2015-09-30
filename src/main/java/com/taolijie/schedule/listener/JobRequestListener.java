@@ -14,10 +14,23 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
  * Created by whf on 9/30/15.
  */
 public class JobRequestListener extends MessageListenerAdapter {
-    private static final Logger log = LoggerFactory.getLogger(Config.APP_LOGGER);
+    private static final Logger appLog = LoggerFactory.getLogger(Config.APP_LOGGER);
+    private static final Logger errLog = LoggerFactory.getLogger(Config.APP_LOGGER);
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        log.debug("received new message: {}", message.toString());
+        if (appLog.isDebugEnabled()) {
+            appLog.debug("received new message: {}", message.toString());
+        }
+
+        String str = message.toString();
+
+        // 解码
+        try {
+            MsgProtocol msg = JSON.parseObject(str, MsgProtocol.class);
+        } catch (JSONException ex) {
+            // 解码失败
+            errLog.error("decoding failed for: {}", str);
+        }
     }
 }
