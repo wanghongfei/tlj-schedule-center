@@ -24,8 +24,8 @@ public class Bootstrap {
         ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
 
         try {
-            System.out.println("before start");
-            service.addJob("1", "RunOnceJob", new Date());
+            service.addJob("1", "QuestExpiredJob", new Date());
+
         } catch (SchedulerException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -33,7 +33,7 @@ public class Bootstrap {
         }
 
 
-/*        JobDetail jd = JobBuilder.newJob(RunOnceJob.class)
+/*        JobDetail jd = JobBuilder.newJob(QuestExpiredJob.class)
                 .withIdentity("test-job", "group-1")
                 .build();
 
