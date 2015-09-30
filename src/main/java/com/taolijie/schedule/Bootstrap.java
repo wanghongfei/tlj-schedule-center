@@ -23,14 +23,14 @@ public class Bootstrap {
         ApplicationContext ctx = initCtx("spring/spring-ctx.xml");
         ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
 
-        try {
+/*        try {
             service.addJob("1", "QuestExpiredJob", new Date());
 
         } catch (SchedulerException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 /*        JobDetail jd = JobBuilder.newJob(QuestExpiredJob.class)

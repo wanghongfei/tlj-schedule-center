@@ -1,30 +1,28 @@
 package com.taolijie.schedule.job;
 
 import com.taolijie.schedule.service.quest.QuestJobService;
-import org.quartz.*;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * Job内容: 领取任务后2小时内如果没有提交任务，
- * 修改状态为未领取
  * Created by whf on 9/30/15.
  */
 @Component
-public class QuestExpiredJob extends RunOnceJob  {
+public class AutoAuditJob extends RunOnceJob {
+
     @Override
     protected void doJob(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("hello");
-
         // 取出参数
         JobDataMap map = context.getJobDetail().getJobDataMap();
         List<Object> parmList = (List<Object>) map.get("parm");
 
         QuestJobService service = (QuestJobService) ctx.getBean("defaultQuestJobService");
-        Integer assignId = (Integer) parmList.get(0);
-        String status = (String) parmList.get(1);
+        Integer reqId = (Integer) parmList.get(0);
+        service.autoAuditNotify(reqId);
 
-        service.questAssignExpired(assignId, status);
     }
 }

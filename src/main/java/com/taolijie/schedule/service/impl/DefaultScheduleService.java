@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by whf on 9/30/15.
@@ -36,7 +37,7 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
      * @throws InvalidJobNameException job bean不存在
      */
     @Override
-    public void addJob(String id, String jobBeanName, Date startAt)
+    public void addJob(String id, String jobBeanName, Date startAt, List<Object> parmList)
             throws SchedulerException, InvalidJobNameException {
 
         // 根据beanName参数生成目标类的全限定名
@@ -53,8 +54,12 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
 
 
         // 创建job
+        JobDataMap map = new JobDataMap();
+        map.put("parm", parmList);
+
         JobDetail jd = JobBuilder.newJob(clazz)
                 .withIdentity(id.toString(), Config.JOB_GROUP)
+                .setJobData(map)
                 .build();
 
         // 创建trigger

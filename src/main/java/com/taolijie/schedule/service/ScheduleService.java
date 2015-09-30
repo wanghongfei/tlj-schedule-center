@@ -4,6 +4,7 @@ import com.taolijie.schedule.exception.InvalidJobNameException;
 import org.quartz.SchedulerException;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by whf on 9/30/15.
@@ -19,7 +20,7 @@ public interface ScheduleService {
      * @exception SchedulerException 调度出错
      * @exception InvalidJobNameException job bean不存在
      */
-    void addJob(String id, String jobBeanName, Date startAt)
+    void addJob(String id, String jobBeanName, Date startAt, List<Object> parmList)
             throws SchedulerException, InvalidJobNameException;
 
     /**

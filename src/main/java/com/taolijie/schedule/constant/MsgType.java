@@ -15,12 +15,21 @@ public enum MsgType {
     /**
      * 删除任务请求
      */
-    DEL_JOB(2);
+    DEL_JOB(2),
+
+    /**
+     * 由调度中心发向网站后台
+     */
+    AUTO_AUDIT(3);
 
     private int code;
 
     private MsgType(int code) {
         this.code = code;
+    }
+
+    public int code() {
+        return this.code;
     }
 
     public static MsgType fromCode(int code) {
@@ -33,6 +42,9 @@ public enum MsgType {
 
             case 2:
                 return DEL_JOB;
+
+            case 3:
+                return AUTO_AUDIT;
 
             default:
                 return null;
