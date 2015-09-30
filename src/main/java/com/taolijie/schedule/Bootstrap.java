@@ -1,20 +1,16 @@
 package com.taolijie.schedule;
 
-import com.taolijie.schedule.job.TestJob;
+import com.taolijie.schedule.service.ScheduleService;
 import org.quartz.*;
-import org.quartz.impl.triggers.CronTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+
+import java.util.Date;
 
 /**
  * 程序启动类
@@ -25,9 +21,19 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         ApplicationContext ctx = initCtx("spring/spring-ctx.xml");
+        ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
+
+        try {
+            System.out.println("before start");
+            service.addJob("1", "RunOnceJob", new Date());
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
-/*        JobDetail jd = JobBuilder.newJob(TestJob.class)
+/*        JobDetail jd = JobBuilder.newJob(RunOnceJob.class)
                 .withIdentity("test-job", "group-1")
                 .build();
 
