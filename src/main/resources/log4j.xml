@@ -50,8 +50,7 @@
 
 	<!-- 3rdparty Loggers -->
     <logger name="org.quartz">
-        <level value="error" />
-        <appender-ref ref="error-appender"/>
+        <level value="info" />
     </logger>
 	<logger name="org.springframework.core">
 		<level value="info" />

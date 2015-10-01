@@ -21,7 +21,10 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         ApplicationContext ctx = initCtx("spring/spring-ctx.xml");
-        ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
+
+        log.info("Spring started");
+
+        //ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
 
 /*        try {
             service.addJob("1", "QuestExpiredJob", new Date());

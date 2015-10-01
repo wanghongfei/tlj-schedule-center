@@ -1,7 +1,10 @@
 package com.taolijie.schedule.job;
 
+import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.service.quest.QuestJobService;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,9 +16,11 @@ import java.util.List;
  */
 @Component
 public class QuestExpiredJob extends RunOnceJob  {
+    public static Logger appLog = LoggerFactory.getLogger(Config.APP_LOGGER);
+
     @Override
     protected void doJob(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("hello");
+        appLog.info("executing job: QuestExpiredJob");
 
         // 取出参数
         JobDataMap map = context.getJobDetail().getJobDataMap();
@@ -26,5 +31,7 @@ public class QuestExpiredJob extends RunOnceJob  {
         String status = (String) parmList.get(1);
 
         service.questAssignExpired(assignId, status);
+
+        appLog.info("done executing job: QuestExpiredJob");
     }
 }

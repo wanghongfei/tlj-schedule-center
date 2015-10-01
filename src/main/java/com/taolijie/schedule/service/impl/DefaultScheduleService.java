@@ -23,6 +23,7 @@ import java.util.List;
 @Service
 public class DefaultScheduleService implements ScheduleService, ApplicationContextAware {
     public static Logger errLog = LoggerFactory.getLogger(Config.ERR_LOGGER);
+    public static Logger appLog = LoggerFactory.getLogger(Config.APP_LOGGER);
 
     private static ApplicationContext ctx;
 
@@ -70,6 +71,8 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
 
         // 启动调度
         scheduler.scheduleJob(jd, trigger);
+
+        appLog.info("job added. id = {}, beanName = {}, startAt = {}", id, jobBeanName, startAt);
     }
 
     @Override

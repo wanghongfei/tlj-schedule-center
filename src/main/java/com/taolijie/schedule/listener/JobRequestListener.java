@@ -37,9 +37,14 @@ public class JobRequestListener extends MessageListenerAdapter {
         // 解码
         try {
             MsgProtocol msg = JSON.parseObject(str, MsgProtocol.class);
+            processMessage(msg);
         } catch (JSONException ex) {
             // 解码失败
             errLog.error("decoding failed for: {}", str);
+        } catch (InvalidJobNameException ex) {
+            errLog.error("invalid job name: {}", ex.getMessage());
+        } catch (SchedulerException ex) {
+            ex.printStackTrace();
         }
     }
 
