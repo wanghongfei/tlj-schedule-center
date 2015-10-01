@@ -25,7 +25,7 @@ import java.util.Arrays;
  */
 @Service
 public class DefaultQuestJobService implements QuestJobService {
-    private static final Logger logger = LoggerFactory.getLogger(Config.APP_LOGGER);
+    private static final Logger appLog = LoggerFactory.getLogger(Config.APP_LOGGER);
 
     @Autowired
     private QuestAssignModelMapper assignMapper;
@@ -56,6 +56,8 @@ public class DefaultQuestJobService implements QuestJobService {
 
     @Override
     public void autoAuditNotify(Integer reqId) {
+        appLog.info("autoAuditNotify executed");
+
         rt.execute((RedisConnection redisConn) -> {
             StringRedisConnection conn = (StringRedisConnection) redisConn;
 
@@ -67,8 +69,8 @@ public class DefaultQuestJobService implements QuestJobService {
 
             // 序列化
             String json = JSON.toJSONString(msg);
-            if (logger.isDebugEnabled()) {
-                logger.debug("sending message to channel[{}], content = {}", RedisChannel.AUTO_AUDIT.code(), json);
+            if (appLog.isDebugEnabled()) {
+                appLog.debug("sending message to channel[{}], content = {}", RedisChannel.AUTO_AUDIT.code(), json);
             }
 
             // 发布消息
