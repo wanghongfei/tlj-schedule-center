@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.constant.MsgType;
 import com.taolijie.schedule.constant.RedisChannel;
+import com.taolijie.schedule.constant.RequestStatus;
 import com.taolijie.schedule.dao.mapper.FinishReqModelMapper;
 import com.taolijie.schedule.dao.mapper.QuestAssignModelMapper;
 import com.taolijie.schedule.model.FinishReqModel;
@@ -65,10 +66,10 @@ public class DefaultQuestJobService implements QuestJobService {
 
         // 检查任务状态
         FinishReqModel model = fiMapper.selectByPrimaryKey(reqId);
-        // 如果状态是"已经通过"或"未通过", 则不执行任何操作
-        String status = model.getStatus();
-        if (status.equals("00") || status.equals("02") || status.equals("04") || status.equals("05")) {
-            appLog.info("status is {}, do nothing.", status);
+        // 如果状态是最终状态, 则不执行任何操作
+        RequestStatus st = RequestStatus.fromCode(model.getStatus());
+        if (RequestStatus.isFinalStatus(st)) {
+            appLog.info("status is {}, do nothing.", st.code());
             return;
         }
 
