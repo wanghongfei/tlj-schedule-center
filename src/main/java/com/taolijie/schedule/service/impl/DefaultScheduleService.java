@@ -81,8 +81,14 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         TriggerKey triKey = TriggerKey.triggerKey(id, Config.TRIGGER_GROUP);
 
         scheduler.pauseTrigger(triKey);
-        scheduler.unscheduleJob(triKey);
-        scheduler.deleteJob(jobKey);
+        boolean delResult = scheduler.deleteJob(jobKey);
+
+        if (delResult) {
+            appLog.info("job deleted: name = {}, group = {}", jobKey.getName(), jobKey.getGroup());
+        } else {
+            appLog.info("job failed to be deleted: name = {}, group = {}", jobKey.getName(), jobKey.getGroup());
+        }
+
     }
 
     @Override

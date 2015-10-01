@@ -39,6 +39,14 @@ public class DefaultQuestJobService implements QuestJobService {
     @Override
     @Transactional(readOnly = false)
     public void questAssignExpired(Integer assignId, String newStatus) {
+        // 检查任务领取表的状态是不是"03:已经提交"
+        // 如果是，则不进行任何操作，方法直接返回
+        QuestAssignModel model = assignMapper.selectByPrimaryKey(assignId);
+        if (model.getStatus().equals("03")) {
+            return;
+        }
+
+        // 修改状态
         QuestAssignModel example = new QuestAssignModel();
         example.setId(assignId);
         example.setStatus(newStatus);

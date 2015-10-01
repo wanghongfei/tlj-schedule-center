@@ -3,6 +3,7 @@ package com.taolijie.schedule.listener;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.taolijie.schedule.constant.Config;
+import com.taolijie.schedule.constant.MsgType;
 import com.taolijie.schedule.exception.InvalidJobNameException;
 import com.taolijie.schedule.exception.InvalidMessageException;
 import com.taolijie.schedule.model.MsgProtocol;
@@ -37,7 +38,7 @@ public class JobRequestListener extends MessageListenerAdapter {
         // 解码
         try {
             MsgProtocol msg = JSON.parseObject(str, MsgProtocol.class);
-            processMessage(msg);
+            dispatchMessage(msg);
         } catch (JSONException ex) {
             // 解码失败
             errLog.error("decoding failed for: {}", str);
@@ -48,10 +49,34 @@ public class JobRequestListener extends MessageListenerAdapter {
         }
     }
 
-    private void processMessage(MsgProtocol msg) throws InvalidJobNameException, SchedulerException {
+    /**
+     * 根据消息类型分发请求
+     * @param msg
+     * @throws InvalidJobNameException
+     * @throws SchedulerException
+     */
+    private void dispatchMessage(MsgProtocol msg) throws InvalidJobNameException, SchedulerException {
         // 取出参数
-        Integer reqId = (Integer) msg.getParmList().get(0);
-        scheduleService.addJob(reqId.toString(), msg.getBeanName(), msg.getExeAt(), msg.getParmList());
+        // 先取出消息类型
+        MsgType type = MsgType.fromCode(msg.getType());
+        switch (type) {
+            case DATE_STYLE:
+                Integer reqId = (Integer) msg.getParmList().get(0);
+                scheduleService.addJob(reqId.toString(), msg.getBeanName(), msg.getExeAt(), msg.getParmList());
+
+                break;
+
+            case DEL_JOB: // 删除任务请求
+                Integer jobId = (Integer) msg.getParmList().get(0);
+                scheduleService.delJob(jobId.toString());
+
+                break;
+
+            default:
+                errLog.error("invalid message type:{}", msg.getType());
+
+        }
+
 
     }
 }
