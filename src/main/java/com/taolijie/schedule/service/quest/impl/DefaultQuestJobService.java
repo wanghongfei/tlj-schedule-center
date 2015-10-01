@@ -67,7 +67,7 @@ public class DefaultQuestJobService implements QuestJobService {
         FinishReqModel model = fiMapper.selectByPrimaryKey(reqId);
         // 如果状态是"已经通过"或"未通过", 则不执行任何操作
         String status = model.getStatus();
-        if (status.equals("00") || status.equals("02")) {
+        if (status.equals("00") || status.equals("02") || status.equals("04") || status.equals("05")) {
             appLog.info("status is {}, do nothing.", status);
             return;
         }
