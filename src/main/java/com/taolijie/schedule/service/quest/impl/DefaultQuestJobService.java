@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.constant.MsgType;
 import com.taolijie.schedule.constant.RedisChannel;
+import com.taolijie.schedule.dao.mapper.FinishReqModelMapper;
 import com.taolijie.schedule.dao.mapper.QuestAssignModelMapper;
+import com.taolijie.schedule.model.FinishReqModel;
 import com.taolijie.schedule.model.MsgProtocol;
 import com.taolijie.schedule.model.QuestAssignModel;
 import com.taolijie.schedule.service.quest.QuestJobService;
@@ -29,6 +31,9 @@ public class DefaultQuestJobService implements QuestJobService {
 
     @Autowired
     private QuestAssignModelMapper assignMapper;
+
+    @Autowired
+    private FinishReqModelMapper fiMapper;
 
     @Autowired
     @Qualifier("redisTemplateForString")
@@ -57,6 +62,16 @@ public class DefaultQuestJobService implements QuestJobService {
     @Override
     public void autoAuditNotify(Integer reqId) {
         appLog.info("autoAuditNotify executed");
+
+        // 检查任务状态
+        FinishReqModel model = fiMapper.selectByPrimaryKey(reqId);
+        // 如果状态是"已经通过"或"未通过", 则不执行任何操作
+        String status = model.getStatus();
+        if (status.equals("00") || status.equals("02")) {
+            appLog.info("status is {}, do nothing.", status);
+            return;
+        }
+
 
         rt.execute((RedisConnection redisConn) -> {
             StringRedisConnection conn = (StringRedisConnection) redisConn;

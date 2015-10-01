@@ -43,7 +43,7 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
-        <table tableName="quest_assign" domainObjectName="QuestAssignModel" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+        <table tableName="finish_request" domainObjectName="FinishReqModel" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                enableUpdateByExample="false" />
 
 <!--        <table tableName="quest_college_rel" domainObjectName="QuestCollRelModel" enableDeleteByPrimaryKey="true" enableUpdateByPrimaryKey="true" enableSelectByExample="false" enableUpdateByExample="false" enableCountByExample="false" enableDeleteByExample="false" />
