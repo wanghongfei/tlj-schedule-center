@@ -1,7 +1,10 @@
 package com.taolijie.schedule.service.impl;
 
 import com.taolijie.schedule.constant.Config;
+import com.taolijie.schedule.constant.TaskStatus;
+import com.taolijie.schedule.dao.mapper.schedule.TaskModelMapper;
 import com.taolijie.schedule.exception.InvalidJobNameException;
+import com.taolijie.schedule.model.TaskModel;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
 import org.quartz.*;
@@ -30,6 +33,9 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     @Autowired
     @Qualifier("scheduleFactory")
     private Scheduler scheduler;
+
+    @Autowired
+    private TaskModelMapper taskMapper;
 
     /**
      * 添加并激活一个任务.
@@ -73,6 +79,23 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         scheduler.scheduleJob(jd, trigger);
 
         appLog.info("job added. id = {}, beanName = {}, startAt = {}", id, jobBeanName, startAt);
+
+        // 记录到数据库中
+        TaskModel taskModel = new TaskModel();
+        taskModel.setCreatedTime(new Date());
+        taskModel.setStatus(TaskStatus.WAIT.code());
+
+        taskModel.setTaskName(id.toLowerCase());
+        taskModel.setTaskGroup(Config.JOB_GROUP);
+
+        taskModel.setTriggerName(id.toLowerCase());
+        taskModel.setTriggerGroup(Config.TRIGGER_GROUP);;
+
+        taskModel.setBeanName(jobBeanName);
+        taskModel.setExeAt(startAt);
+        taskMapper.insertSelective(taskModel);
+
+        map.put("id", taskModel.getId());
     }
 
     @Override
