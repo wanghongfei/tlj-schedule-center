@@ -1,4 +1,4 @@
-package com.taolijie.schedule.dao.mapper;
+package com.taolijie.schedule.dao.mapper.tlj;
 
 import com.taolijie.schedule.model.QuestAssignModel;
 import org.springframework.stereotype.Repository;

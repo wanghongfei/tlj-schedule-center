@@ -25,9 +25,30 @@
         <property name="defaultAutoCommit" value="false" />
     </bean>
 
+    <!--任务中心数据源-->
+    <bean id="dataSourceForSchedule" class="org.apache.tomcat.jdbc.pool.DataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/schedule_center?characterEncoding=utf-8" />
+        <property name="username" value="root" />
+        <property name="password" value="111111" />
+
+        <property name="maxActive" value="30" />
+
+        <property name="testOnBorrow" value="true" />
+        <property name="testWhileIdle" value="true" />
+        <property name="validationQuery" value="select 1" />
+
+        <!-- 手动提交 -->
+        <property name="defaultAutoCommit" value="false" />
+    </bean>
+
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="transactionManagerForSchedule" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSourceForSchedule" />
     </bean>
 
 
@@ -40,11 +61,26 @@
                           value="classpath:mapper/*.xml" />-->
     </bean>
 
+    <!-- myBatis配置 for schedule center -->
+    <bean id="sqlSessionFactoryForSchedule" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis/mybatis-schedule-config.xml" />
+        <property name="dataSource" ref="dataSourceForSchedule" />
+
+        <!--        <property name="mapperLocations"
+                          value="classpath:mapper/*.xml" />-->
+    </bean>
+
     <!-- myBatis配置 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
-        <property name="basePackage" value="com.taolijie.schedule.dao.mapper"/>
+        <property name="basePackage" value="com.taolijie.schedule.dao.mapper.tlj"/>
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    <!-- myBatis配置 for Schedule center -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+        <property name="basePackage" value="com.taolijie.schedule.dao.mapper.schedule"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactoryForSchedule"/>
     </bean>
 
 </beans>
