@@ -1,9 +1,15 @@
 # 桃李街任务调度中心
 
+## 工作流程
 ScheduleCenter通过`Quartz`框架实现任务调度，通过`Redis`与任务发布者进行通讯。工作流程为：
-- 调度中心订阅`Redis`的`Channel`
+- 调度中心订阅`Redis`的`Channel`: post-job
 - 任务发布者向该`Channel`投递消息
 - 调度中心收到消息，开始调度
+
+## 特性
+- 所有任务的执行情况会被记录到数据库中
+- 重启程序时自动载入上次没执行的任务
+- Web界面管理控制台(developing)
 
 ## 通讯协议
 ```
@@ -12,7 +18,9 @@ ScheduleCenter通过`Quartz`框架实现任务调度，通过`Redis`与任务发
 	"beanName": "",     // 执行任务的springBean
 	"cronExp": "",      // crontab表达式
 	"exeAt": "",        // 任务执行的时间点
-	"parmList": []      // 参数
+	"parmList": []      // 自定义参数
 }
 ```
-`Redis Channel`名: `post-job`
+
+## 可能存在的问题
+- `Redis`消息收发可靠性的问题, 考虑使用`Kafka`代替
