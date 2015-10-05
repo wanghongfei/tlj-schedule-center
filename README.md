@@ -24,3 +24,9 @@ ScheduleCenter通过`Quartz`框架实现任务调度，通过`Redis`与任务发
 
 ## 可能存在的问题
 - `Redis`消息收发可靠性的问题, 考虑使用`Kafka`代替
+
+## 构建执行
+```
+mvn clean install
+./run.sh -Xms100m -Xmx100m
+```
