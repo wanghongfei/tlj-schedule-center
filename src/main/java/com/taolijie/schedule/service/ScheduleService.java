@@ -24,6 +24,12 @@ public interface ScheduleService {
             throws SchedulerException, InvalidJobNameException;
 
     /**
+     * 从数据库中载入还没有被执行的任务
+     */
+    void loadJobs()
+            throws SchedulerException;
+
+    /**
      * 停止并删除一个任务
      *
      * @param id 任务唯一标识

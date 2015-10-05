@@ -17,46 +17,34 @@ import java.util.Date;
  * Created by whf on 9/30/15.
  */
 public class Bootstrap {
-    private static Logger log = LoggerFactory.getLogger("LOGGER");
+    private static Logger log = LoggerFactory.getLogger("INFO-LOGGER");
+    private static Logger errLog = LoggerFactory.getLogger("ERROR-LOGGER");
 
     public static void main(String[] args) {
         ApplicationContext ctx = initCtx("spring/spring-ctx.xml");
-
         log.info("Spring started");
 
-        //ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
-
-/*        try {
-            service.addJob("1", "QuestExpiredJob", new Date());
-
-        } catch (SchedulerException e) {
-            e.printStackTrace();
+        // 载入没有执行的任务
+        log.info("loading jobs... ...");
+        try {
+            loadJobs(ctx);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+            errLog.error("job loading failed!!");
+        }
 
+        log.info("all done. ^_^|");
 
-/*        JobDetail jd = JobBuilder.newJob(QuestExpiredJob.class)
-                .withIdentity("test-job", "group-1")
-                .build();
+    }
 
-
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity("test-trigger", "group-1")
-                .withSchedule(
-                        SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(4)
-                        .withRepeatCount(1)
-                )
-                .build();
-
-        try {
-            scheduler.scheduleJob(jd, trigger);
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }*/
-
-
+    /**
+     * 载入没有执行的任务
+     * @param ctx
+     * @throws SchedulerException
+     */
+    private static void loadJobs(ApplicationContext ctx) throws SchedulerException {
+        ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
+        service.loadJobs();
     }
 
 
@@ -71,25 +59,6 @@ public class Bootstrap {
         return ctx;
     }
 
-    /**
-     * @deprecated
-     */
-    private static void subscribeChannel(ApplicationContext ctx, String chan) {
-        StringRedisTemplate rt = (StringRedisTemplate)ctx.getBean("redisTemplateForString");
-
-        rt.execute((RedisConnection redisConnection) -> {
-            StringRedisConnection strConn = (StringRedisConnection) redisConnection;
-
-            strConn.subscribe((message, bytes) -> {
-                System.out.println(message.toString());
-            }, "chan");
-
-            log.info("subscribed channel: {}", chan);
-
-            return null;
-        });
-
-    }
 
     private static void triggerInit(ApplicationContext ctx) {
         Scheduler scheduler = (Scheduler) ctx.getBean("scheduleFactory");
