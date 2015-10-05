@@ -65,6 +65,8 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         JobDataMap map = new JobDataMap();
         map.put("parm", parmList);
 
+        saveTask(id.toString(), jobBeanName, startAt, map);
+
         JobDetail jd = JobBuilder.newJob(clazz)
                 .withIdentity(id.toString(), Config.JOB_GROUP)
                 .setJobData(map)
@@ -81,7 +83,6 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
 
         appLog.info("job added. id = {}, beanName = {}, startAt = {}", id, jobBeanName, startAt);
 
-        saveTask(id.toString(), jobBeanName, startAt, map);
     }
 
     @Override

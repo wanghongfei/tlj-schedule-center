@@ -84,7 +84,7 @@ public abstract class RunOnceJob implements Job, ApplicationContextAware {
         Integer id = (Integer) jd.getJobDataMap().get("id");
 
         if (null == taskMapper) {
-            taskMapper = (TaskModelMapper) ctx.getBeansOfType(TaskModelMapper.class);
+            taskMapper = (TaskModelMapper) ctx.getBean("taskModelMapper");
         }
 
 
