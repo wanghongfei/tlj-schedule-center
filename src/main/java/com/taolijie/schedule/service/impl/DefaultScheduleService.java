@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -80,22 +81,7 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
 
         appLog.info("job added. id = {}, beanName = {}, startAt = {}", id, jobBeanName, startAt);
 
-        // 记录到数据库中
-        TaskModel taskModel = new TaskModel();
-        taskModel.setCreatedTime(new Date());
-        taskModel.setStatus(TaskStatus.WAIT.code());
-
-        taskModel.setTaskName(id.toLowerCase());
-        taskModel.setTaskGroup(Config.JOB_GROUP);
-
-        taskModel.setTriggerName(id.toLowerCase());
-        taskModel.setTriggerGroup(Config.TRIGGER_GROUP);;
-
-        taskModel.setBeanName(jobBeanName);
-        taskModel.setExeAt(startAt);
-        taskMapper.insertSelective(taskModel);
-
-        map.put("id", taskModel.getId());
+        saveTask(id.toString(), jobBeanName, startAt, map);
     }
 
     @Override
@@ -117,5 +103,27 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.ctx = applicationContext;
+    }
+
+    /**
+     * 任务信息保存到数据库中
+     */
+    @Transactional(readOnly = false)
+    private void saveTask(String id, String beanName, Date exeAt, JobDataMap map) {
+        TaskModel taskModel = new TaskModel();
+        taskModel.setCreatedTime(new Date());
+        taskModel.setStatus(TaskStatus.WAIT.code());
+
+        taskModel.setTaskName(id.toLowerCase());
+        taskModel.setTaskGroup(Config.JOB_GROUP);
+
+        taskModel.setTriggerName(id.toLowerCase());
+        taskModel.setTriggerGroup(Config.TRIGGER_GROUP);;
+
+        taskModel.setBeanName(beanName);
+        taskModel.setExeAt(exeAt);
+        taskMapper.insertSelective(taskModel);
+
+        map.put("id", taskModel.getId());
     }
 }
