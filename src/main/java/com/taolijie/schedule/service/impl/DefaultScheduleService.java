@@ -1,10 +1,12 @@
 package com.taolijie.schedule.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.constant.TaskStatus;
 import com.taolijie.schedule.dao.mapper.schedule.TaskModelMapper;
 import com.taolijie.schedule.exception.InvalidJobNameException;
+import com.taolijie.schedule.job.DefaultRunOnceJob;
 import com.taolijie.schedule.model.TaskModel;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by whf on 9/30/15.
@@ -46,37 +49,28 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
      * @throws InvalidJobNameException job bean不存在
      */
     @Override
-    public void addJob(String id, String jobBeanName, Date startAt, List<Object> parmList)
+    public void addJob(String host, Integer port, String path, String method, Date startAt, Map<String, String> parmMap)
             throws SchedulerException, InvalidJobNameException {
-
-        // 根据beanName参数生成目标类的全限定名
-        String clazzName = StringUtils.concat(0, "com.taolijie.schedule.job.", jobBeanName);
-
-        // 得到该类的class对象
-        Class clazz = null;
-        try {
-            clazz = Class.forName(clazzName);
-        } catch (ClassNotFoundException e) {
-            errLog.error("invalid spring bean name:{}", clazzName);
-            throw new InvalidJobNameException(clazzName);
-        }
-
 
         // 创建job
         JobDataMap map = new JobDataMap();
-        map.put("parm", parmList);
+        map.putAll(parmMap);
+        map.put("callback.host", host);
+        map.put("callback.port", port);
+        map.put("callback.path", path);
+        map.put("callback.method", method);
 
-        saveTask(id.toString(), jobBeanName, startAt, parmList, map);
+        saveTask(host, port, path, method, startAt, parmMap, map);
 
-        JobDetail jd = makeJobDetail(clazz, id, map);
+        JobDetail jd = makeJobDetail(parmMap.get("taskId"), map);
 
         // 创建trigger
-        Trigger trigger = makeTrigger(id, startAt);
+        Trigger trigger = makeTrigger(parmMap.get("taskId"), startAt);
 
         // 启动调度
         scheduler.scheduleJob(jd, trigger);
 
-        appLog.info("job added. id = {}, beanName = {}, startAt = {}", id, jobBeanName, startAt);
+        appLog.info("job added. id = {}, callbackPath = {}, startAt = {}", parmMap.get("taskId"), path, startAt);
 
     }
 
@@ -100,38 +94,33 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
      */
     private void loadSingleJob(TaskModel task) throws SchedulerException {
         // 反序列化参数数据
-        List<Object> parmList = JSON.parseArray(task.getParameter(), Object.class);
+        JSONObject jsonO = JSON.parseObject(task.getParameter());
+        System.out.println("@@@@@@@@@@@" + jsonO.toJSONString());
 
         // 创建job
         JobDataMap map = new JobDataMap();
-        map.put("parm", parmList);
+        map.putAll(jsonO);
+        map.put("callback.host", task.getCallbackHost());
+        map.put("callback.port", task.getCallbackPort());
+        map.put("callback.path", task.getCallbackPath());
+        map.put("callback.method", task.getCallbackMethod());
 
-        // 根据beanName参数生成目标类的全限定名
-        String clazzName = StringUtils.concat(0, "com.taolijie.schedule.job.", task.getBeanName());
 
-        // 得到类的class对象
-        Class clazz = null;
-        try {
-            clazz = Class.forName(clazzName);
-        } catch (ClassNotFoundException e) {
-            errLog.error("invalid spring bean name:{}", clazzName);
-        }
-
-        JobDetail jd = makeJobDetail(clazz, task.getId().toString(), map);
+        JobDetail jd = makeJobDetail(task.getId().toString(), map);
 
         // 创建trigger
         Trigger trigger = makeTrigger(task.getId().toString(), task.getExeAt());
 
         // 启动调度
         scheduler.scheduleJob(jd, trigger);
-        appLog.info("job added. id = {}, beanName = {}, startAt = {}", task.getId(), task.getBeanName(), task.getExeAt());
+        appLog.info("job added. id = {}, callback = {}, startAt = {}", task.getId(), task.getCallbackPath(), task.getExeAt());
 
     }
 
-    private JobDetail makeJobDetail(Class clazz, String id, JobDataMap map) {
+    private JobDetail makeJobDetail(String id, JobDataMap map) {
         map.put("id", Integer.valueOf(id));
 
-        return JobBuilder.newJob(clazz)
+        return JobBuilder.newJob(DefaultRunOnceJob.class)
                 .withIdentity(id, Config.JOB_GROUP)
                 .setJobData(map)
                 .build();
@@ -170,21 +159,24 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
      * 任务信息保存到数据库中
      */
     @Transactional(readOnly = false)
-    private void saveTask(String id, String beanName, Date exeAt, List<Object> parmList, JobDataMap map) {
+    private void saveTask(String host, Integer port, String path, String method, Date exeAt, Map<String, String> parmMap, JobDataMap map) {
         TaskModel taskModel = new TaskModel();
         taskModel.setCreatedTime(new Date());
         taskModel.setStatus(TaskStatus.WAIT.code());
 
-        taskModel.setTaskName(id.toLowerCase());
+        taskModel.setTaskName(parmMap.get("taskId"));
         taskModel.setTaskGroup(Config.JOB_GROUP);
 
-        taskModel.setTriggerName(id.toLowerCase());
+        taskModel.setTriggerName(parmMap.get("taskId"));
         taskModel.setTriggerGroup(Config.TRIGGER_GROUP);;
 
-        taskModel.setBeanName(beanName);
         taskModel.setExeAt(exeAt);
+        taskModel.setCallbackHost(host);
+        taskModel.setCallbackPort(port);
+        taskModel.setCallbackPath(path);
+        taskModel.setCallbackMethod(method);
 
-        taskModel.setParameter(JSON.toJSONString(parmList));
+        taskModel.setParameter(JSON.toJSONString(parmMap));
         taskMapper.insertSelective(taskModel);
 
         map.put("id", taskModel.getId());

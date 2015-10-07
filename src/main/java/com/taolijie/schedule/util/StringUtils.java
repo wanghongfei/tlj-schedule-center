@@ -1,5 +1,9 @@
 package com.taolijie.schedule.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 /**
  * Created by whf on 9/30/15.
  */
@@ -25,6 +29,20 @@ public class StringUtils {
 
         for (Object o : objs) {
             sb.append(o.toString());
+        }
+
+        return sb.toString();
+    }
+
+    public static String stream2String(InputStream in) throws IOException {
+        InputStreamReader reader = new InputStreamReader(in);
+
+        char[] cbuf = new char[200];
+        int len = -1;
+
+        StringBuilder sb = new StringBuilder();
+        while ( (len = reader.read(cbuf)) != -1 ) {
+            sb.append(cbuf, 0, len);
         }
 
         return sb.toString();

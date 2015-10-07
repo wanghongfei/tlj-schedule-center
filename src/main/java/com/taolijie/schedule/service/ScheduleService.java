@@ -5,6 +5,7 @@ import org.quartz.SchedulerException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by whf on 9/30/15.
@@ -13,14 +14,12 @@ public interface ScheduleService {
     /**
      * 添加一个任务
      *
-     * @param id 任务唯一标识
-     * @param jobBeanName 执行任务的springBean
      * @param startAt 执行时间点
      *
      * @exception SchedulerException 调度出错
      * @exception InvalidJobNameException job bean不存在
      */
-    void addJob(String id, String jobBeanName, Date startAt, List<Object> parmList)
+    void addJob(String host, Integer port, String path, String method, Date startAt, Map<String, String> parmMap)
             throws SchedulerException, InvalidJobNameException;
 
     /**

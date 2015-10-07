@@ -19,7 +19,23 @@ public class TaskModel {
 
     private String triggerGroup;
 
-    private String beanName;
+    /**
+     * 接口调用地址
+     */
+    private String callbackPath;
+    /**
+     * 接口调用主机名
+     */
+    private String callbackHost;
+    /**
+     * 接口调用端口
+     */
+    private Integer callbackPort;
+
+    /**
+     * 接口调用方法
+     */
+    private String callbackMethod;
 
     private Integer status;
 
@@ -261,12 +277,28 @@ public class TaskModel {
         return memo;
     }
 
-    public String getBeanName() {
-        return beanName;
+    public String getCallbackPath() {
+        return callbackPath;
     }
 
-    public void setBeanName(String beanName) {
-        this.beanName = beanName;
+    public void setCallbackPath(String callbackPath) {
+        this.callbackPath = callbackPath;
+    }
+
+    public String getCallbackHost() {
+        return callbackHost;
+    }
+
+    public void setCallbackHost(String callbackHost) {
+        this.callbackHost = callbackHost;
+    }
+
+    public Integer getCallbackPort() {
+        return callbackPort;
+    }
+
+    public void setCallbackPort(Integer callbackPort) {
+        this.callbackPort = callbackPort;
     }
 
     public String getParameter() {
@@ -275,6 +307,14 @@ public class TaskModel {
 
     public void setParameter(String parameter) {
         this.parameter = parameter;
+    }
+
+    public String getCallbackMethod() {
+        return callbackMethod;
+    }
+
+    public void setCallbackMethod(String callbackMethod) {
+        this.callbackMethod = callbackMethod;
     }
 
     /**

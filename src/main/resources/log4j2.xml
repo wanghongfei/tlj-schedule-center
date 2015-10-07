@@ -33,8 +33,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="INFO-LOGGER">
-            <Level value="debug" />
+        <Logger name="INFO-LOGGER" level="debug">
             <AppenderRef ref="info-appender" />
         </Logger>
 

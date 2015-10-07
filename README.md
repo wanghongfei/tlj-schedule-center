@@ -15,10 +15,13 @@ ScheduleCenter通过`Quartz`框架实现任务调度，通过`Redis`与任务发
 ```
 {
 	"type": 1,          // 消息的类型
-	"beanName": "",     // 执行任务的springBean
+	"callbackHost",     // 接口主机名
+	"callbackPort",     // 主机端口
+	"callbackPath",     // 接口URL path
+	"callbackMethod",   // 调用方式(GET | POST)
 	"cronExp": "",      // crontab表达式
 	"exeAt": "",        // 任务执行的时间点
-	"parmList": []      // 自定义参数
+	"parmMap": []       // 自定义参数
 }
 ```
 

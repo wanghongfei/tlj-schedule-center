@@ -61,16 +61,16 @@ public class JobRequestListener extends MessageListenerAdapter {
         MsgType type = MsgType.fromCode(msg.getType());
         switch (type) {
             case DATE_STYLE:
-                Integer reqId = (Integer) msg.getParmList().get(0);
-                scheduleService.addJob(reqId.toString(), msg.getBeanName(), msg.getExeAt(), msg.getParmList());
+                scheduleService.addJob(
+                        msg.getCallbackHost(),
+                        msg.getCallbackPort(),
+                        msg.getCallbackPath(),
+                        msg.getCallbackMethod(),
+                        msg.getExeAt(),
+                        msg.getParmMap());
 
                 break;
 
-            case DEL_JOB: // 删除任务请求
-                Integer jobId = (Integer) msg.getParmList().get(0);
-                scheduleService.delJob(jobId.toString());
-
-                break;
 
             default:
                 errLog.error("invalid message type:{}", msg.getType());

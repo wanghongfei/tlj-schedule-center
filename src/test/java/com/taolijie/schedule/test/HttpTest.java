@@ -25,7 +25,7 @@ public class HttpTest {
     public void test() throws Exception {
 
         HttpClientBuilder builder = HttpClientBuilder.create();
-        for (int ix = 0 ; ix < 100 ; ++ix) {
+        for (int ix = 0 ; ix < 1 ; ++ix) {
             sendOneQuest(HttpClientFactory.getClient());
             //sendOneQuest(builder.build());
         }
