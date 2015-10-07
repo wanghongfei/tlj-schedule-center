@@ -94,5 +94,11 @@ public class DefaultQuestJobService implements QuestJobService {
 
             return null;
         });
+
+        // 修改状态
+        FinishReqModel example = new FinishReqModel();
+        example.setId(reqId);
+        example.setStatus(RequestStatus.AUTO_PASSED.code());
+        fiMapper.updateByPrimaryKeySelective(example);
     }
 }
