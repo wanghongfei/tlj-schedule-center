@@ -1,17 +1,13 @@
 package com.taolijie.schedule.job;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.util.IOUtils;
 import com.taolijie.schedule.component.ResponseText;
 import com.taolijie.schedule.constant.Config;
-import com.taolijie.schedule.constant.TaskStatus;
 import com.taolijie.schedule.http.HttpClientFactory;
-import com.taolijie.schedule.model.TaskModel;
 import com.taolijie.schedule.util.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
