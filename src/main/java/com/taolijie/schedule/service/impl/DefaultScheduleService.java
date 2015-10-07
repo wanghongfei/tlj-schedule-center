@@ -129,6 +129,8 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     }
 
     private JobDetail makeJobDetail(Class clazz, String id, JobDataMap map) {
+        map.put("id", Integer.valueOf(id));
+
         return JobBuilder.newJob(clazz)
                 .withIdentity(id, Config.JOB_GROUP)
                 .setJobData(map)

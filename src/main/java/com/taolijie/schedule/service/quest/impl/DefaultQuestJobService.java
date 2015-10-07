@@ -1,10 +1,7 @@
 package com.taolijie.schedule.service.quest.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.taolijie.schedule.constant.Config;
-import com.taolijie.schedule.constant.MsgType;
-import com.taolijie.schedule.constant.RedisChannel;
-import com.taolijie.schedule.constant.RequestStatus;
+import com.taolijie.schedule.constant.*;
 import com.taolijie.schedule.dao.mapper.tlj.FinishReqModelMapper;
 import com.taolijie.schedule.dao.mapper.tlj.QuestAssignModelMapper;
 import com.taolijie.schedule.model.FinishReqModel;
@@ -95,10 +92,5 @@ public class DefaultQuestJobService implements QuestJobService {
             return null;
         });
 
-        // 修改状态
-        FinishReqModel example = new FinishReqModel();
-        example.setId(reqId);
-        example.setStatus(RequestStatus.AUTO_PASSED.code());
-        fiMapper.updateByPrimaryKeySelective(example);
     }
 }
