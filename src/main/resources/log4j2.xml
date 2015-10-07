@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <Appenders>
+        <!-- 普通日志 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p: %m%n" />
+        </Console>
+
+        <!-- 错误日志写入到文件中 -->
+        <RollingFile name="error-appender" fileName="logs/schedule-error.log"
+                     filePattern="logs/%d{MM-dd-yyyy}log">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p: %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
+        <!-- 普通日志写入到文件中 -->
+        <RollingFile name="info-appender" fileName="logs/schedule-connection.log"
+                     filePattern="logs/%d{MM-dd-yyyy}log">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p: %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
+
+    </Appenders>
+
+    <Loggers>
+        <Logger name="INFO-LOGGER">
+            <Level value="debug" />
+            <AppenderRef ref="info-appender" />
+        </Logger>
+
+        <Logger name="ERROR-LOGGER">
+            <Level value="debug" />
+            <AppenderRef ref="error-appender" />
+        </Logger>
+
+        <!-- 3rdparty Loggers -->
+        <Logger name="org.quartz">
+            <Level value="info" />
+        </Logger>
+
+
+        <!-- Root Logger -->
+        <Root level="info">
+            <AppenderRef ref="console" />
+        </Root>
+
+    </Loggers>
+
+
+</configuration>
