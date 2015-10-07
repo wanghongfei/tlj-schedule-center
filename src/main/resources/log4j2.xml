@@ -34,7 +34,6 @@
 
     <Loggers>
         <Logger name="INFO-LOGGER" level="debug">
-            <AppenderRef ref="info-appender" />
         </Logger>
 
         <Logger name="ERROR-LOGGER">

@@ -95,7 +95,6 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     private void loadSingleJob(TaskModel task) throws SchedulerException {
         // 反序列化参数数据
         JSONObject jsonO = JSON.parseObject(task.getParameter());
-        System.out.println("@@@@@@@@@@@" + jsonO.toJSONString());
 
         // 创建job
         JobDataMap map = new JobDataMap();

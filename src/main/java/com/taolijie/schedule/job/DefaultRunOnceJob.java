@@ -28,6 +28,8 @@ import java.util.Map;
 @Component
 public class DefaultRunOnceJob extends RunOnceJob {
     private static Logger infoLogger = LoggerFactory.getLogger(Config.APP_LOGGER);
+    private static Logger errLogger = LoggerFactory.getLogger(Config.ERR_LOGGER);
+
 
 
 
@@ -70,7 +72,8 @@ public class DefaultRunOnceJob extends RunOnceJob {
             doResponse(resp, fullUrl);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            errLogger.error(e.toString());
+            throw new JobExecutionException();
         }
 
     }
