@@ -45,6 +45,8 @@ public class Bootstrap {
     private static void loadJobs(ApplicationContext ctx) throws SchedulerException {
         ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
         service.loadJobs();
+        // 载入日常任务
+        service.loadRoutineJob();
     }
 
 

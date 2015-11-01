@@ -10,6 +10,7 @@ import com.taolijie.schedule.job.DefaultRunOnceJob;
 import com.taolijie.schedule.model.TaskModel;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,6 +148,32 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
             appLog.info("job failed to be deleted: name = {}, group = {}", jobKey.getName(), jobKey.getGroup());
         }
 
+    }
+
+    @Override
+    public int loadRoutineJob() throws SchedulerException {
+
+        // 创建job
+        JobDataMap map = new JobDataMap();
+        map.put("callback.host", "127.0.0.1");
+        map.put("callback.port", 8080);
+        map.put("callback.path", "/api/pv/all");
+        map.put("callback.method", "GET");
+
+
+        String randomId = RandomStringUtils.randomNumeric(4);
+        JobDetail jd = makeJobDetail(randomId, map);
+
+        // 创建trigger
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity(randomId, Config.TRIGGER_GROUP)
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 1 23 * * ?")) // 每天23:01执行一次
+                .build();
+
+        // 启动调度
+        scheduler.scheduleJob(jd, trigger);
+        appLog.info("Routine job added. id = {}, callback = {}, startAt = {}", randomId, "api/pv/all", "0 1 23 * * ?");
+        return 0;
     }
 
     @Override

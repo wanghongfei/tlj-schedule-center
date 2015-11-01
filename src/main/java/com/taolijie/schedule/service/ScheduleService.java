@@ -36,4 +36,10 @@ public interface ScheduleService {
      */
     void delJob(String id)
             throws SchedulerException;
+
+    /**
+     * 加载日常任务
+     * @return
+     */
+    int loadRoutineJob() throws SchedulerException;
 }
