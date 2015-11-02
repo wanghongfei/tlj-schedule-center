@@ -45,6 +45,7 @@ public class Bootstrap {
      */
     private static void loadJobs(ApplicationContext ctx) throws SchedulerException, IOException {
         ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
+        // 从数据库中读取上次没有执行完成的任务
         service.loadJobs();
         // 载入日常任务
         service.loadRoutineJob();
@@ -63,11 +64,4 @@ public class Bootstrap {
     }
 
 
-    private static void triggerInit(ApplicationContext ctx) {
-        Scheduler scheduler = (Scheduler) ctx.getBean("scheduleFactory");
-        ctx.getBean("sqlSessionFactory");
-
-        StringRedisTemplate rt = (StringRedisTemplate)ctx.getBean("redisTemplateForString");
-
-    }
 }
