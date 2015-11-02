@@ -3,6 +3,7 @@ package com.taolijie.schedule.service;
 import com.taolijie.schedule.exception.InvalidJobNameException;
 import org.quartz.SchedulerException;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,5 +42,5 @@ public interface ScheduleService {
      * 加载日常任务
      * @return
      */
-    int loadRoutineJob() throws SchedulerException;
+    int loadRoutineJob() throws SchedulerException, IOException;
 }

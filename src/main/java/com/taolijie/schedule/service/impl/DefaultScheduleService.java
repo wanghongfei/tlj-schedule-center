@@ -22,6 +22,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -151,28 +153,35 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     }
 
     @Override
-    public int loadRoutineJob() throws SchedulerException {
+    public int loadRoutineJob() throws SchedulerException, IOException {
+        appLog.info("Reading routine job config file...");
 
-        // 创建job
-        JobDataMap map = new JobDataMap();
-        map.put("callback.host", "127.0.0.1");
-        map.put("callback.port", 8080);
-        map.put("callback.path", "/api/pv/all");
-        map.put("callback.method", "GET");
+        // 从配置文件中读取日常任务
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        String taskStr = StringUtils.stream2String(cl.getResourceAsStream("routine-job.json"));
+        List<TaskModel> taskList = JSON.parseArray(taskStr, TaskModel.class);
 
+        appLog.info("Starting routine job...");
 
-        String randomId = RandomStringUtils.randomNumeric(4);
-        JobDetail jd = makeJobDetail(randomId, map);
+        for (TaskModel task : taskList) {
+            JobDataMap map = new JobDataMap();
+            map.put("callback.host", task.getCallbackHost());
+            map.put("callback.port", task.getCallbackPort());
+            map.put("callback.path", task.getCallbackPath());
+            map.put("callback.method", task.getCallbackMethod());
 
-        // 创建trigger
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(randomId, Config.TRIGGER_GROUP)
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 1 23 * * ?")) // 每天23:01执行一次
-                .build();
+            JobDetail jd = makeJobDetail(task.getId().toString(), map);
+            Trigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(task.getId().toString(), Config.TRIGGER_GROUP)
+                    .withSchedule(CronScheduleBuilder.cronSchedule(task.getCronExp()))
+                    .build();
 
-        // 启动调度
-        scheduler.scheduleJob(jd, trigger);
-        appLog.info("Routine job added. id = {}, callback = {}, startAt = {}", randomId, "api/pv/all", "0 1 23 * * ?");
+            // 启动调度
+            scheduler.scheduleJob(jd, trigger);
+            appLog.info("Routine job added. id = {}, callback = {}, startAt = {}", task.getId(), task.getCallbackPath(), task.getCronExp());
+
+        }
+
         return 0;
     }
 

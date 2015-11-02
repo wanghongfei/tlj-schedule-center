@@ -19,6 +19,8 @@ public class TaskModel {
 
     private String triggerGroup;
 
+    private String cronExp;
+
     /**
      * 接口调用地址
      */
@@ -143,6 +145,14 @@ public class TaskModel {
      */
     public void setExeAt(Date exeAt) {
         this.exeAt = exeAt;
+    }
+
+    public String getCronExp() {
+        return cronExp;
+    }
+
+    public void setCronExp(String cronExp) {
+        this.cronExp = cronExp;
     }
 
     /**
@@ -315,6 +325,28 @@ public class TaskModel {
 
     public void setCallbackMethod(String callbackMethod) {
         this.callbackMethod = callbackMethod;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TaskModel{");
+        sb.append("id=").append(id);
+        sb.append(", createdTime=").append(createdTime);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", exeAt=").append(exeAt);
+        sb.append(", taskName='").append(taskName).append('\'');
+        sb.append(", taskGroup='").append(taskGroup).append('\'');
+        sb.append(", triggerName='").append(triggerName).append('\'');
+        sb.append(", triggerGroup='").append(triggerGroup).append('\'');
+        sb.append(", callbackPath='").append(callbackPath).append('\'');
+        sb.append(", callbackHost='").append(callbackHost).append('\'');
+        sb.append(", callbackPort=").append(callbackPort);
+        sb.append(", callbackMethod='").append(callbackMethod).append('\'');
+        sb.append(", status=").append(status);
+        sb.append(", parameter='").append(parameter).append('\'');
+        sb.append(", memo='").append(memo).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
     /**

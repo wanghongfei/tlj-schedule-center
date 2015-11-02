@@ -10,6 +10,7 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -42,7 +43,7 @@ public class Bootstrap {
      * @param ctx
      * @throws SchedulerException
      */
-    private static void loadJobs(ApplicationContext ctx) throws SchedulerException {
+    private static void loadJobs(ApplicationContext ctx) throws SchedulerException, IOException {
         ScheduleService service = (ScheduleService) ctx.getBean("defaultScheduleService");
         service.loadJobs();
         // 载入日常任务
