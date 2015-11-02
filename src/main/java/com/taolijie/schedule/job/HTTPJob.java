@@ -8,6 +8,7 @@ import com.taolijie.schedule.util.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,17 +20,40 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Created by whf on 10/8/15.
+ * 调用HTTP接口的Job
+ * Created by whf on 11/2/15.
  */
-@Component
-public class DefaultRunOnceJob extends RunOnceJob {
-    private static Logger infoLogger = LoggerFactory.getLogger(Config.APP_LOGGER);
-    private static Logger errLogger = LoggerFactory.getLogger(Config.ERR_LOGGER);
+public abstract class HTTPJob implements Job {
 
+    protected static Logger infoLogger = LoggerFactory.getLogger(Config.APP_LOGGER);
+    protected static Logger errLogger = LoggerFactory.getLogger(Config.ERR_LOGGER);
 
+    /**
+     * 子类实现此方法来处理任务执行过程中的异常
+     * @param ex
+     */
+    protected abstract void onException(JobExecutionContext ctx, Exception ex);
 
+    /**
+     * 该方法在任务正常执行完成后被调用
+     * @param ctx
+     */
+    protected abstract void afterExecution(JobExecutionContext ctx);
 
     @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        try {
+            doJob(context);
+
+        } catch (Exception ex) {
+            onException(context, ex);
+
+        }
+
+        afterExecution(context);
+    }
+
+
     protected void doJob(JobExecutionContext context) throws JobExecutionException {
 
         // 取出接口参数

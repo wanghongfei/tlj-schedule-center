@@ -8,45 +8,55 @@ import org.quartz.*;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 只执行一次的Job. Job执行完成后会自动删除自身。
  * Created by whf on 9/30/15.
  */
-public abstract class RunOnceJob implements Job, ApplicationContextAware {
+@Component
+public class RunOnceJob extends HTTPJob implements ApplicationContextAware {
     protected static ApplicationContext ctx;
 
     private static ScheduleService scheduleService;
     private static TaskModelMapper taskMapper;
 
 
+    /**
+     * 任务执行异常时调用
+     * @param ctx
+     * @param ex
+     */
+    @Override
+    protected void onException(JobExecutionContext ctx, Exception ex) {
+        try {
+            markError(ctx.getJobDetail());
+            delJob(ctx.getJobDetail());
+
+        } catch (SchedulerException e) {
+            // 删除任务失败
+            e.printStackTrace();
+            errLogger.error(e.toString());
+        }
+    }
 
     /**
-     * 子类重写此方法，定义自己的业务逻辑
-     * @param context
-     * @throws JobExecutionException
+     * 任务执行正常完成时调用
+     * @param ctx
      */
-    abstract protected void doJob(JobExecutionContext context) throws JobExecutionException;
-
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void afterExecution(JobExecutionContext ctx) {
         try {
-            doJob(context);
-            markFinish(context.getJobDetail());
+            delJob(ctx.getJobDetail());
+            markFinish(ctx.getJobDetail());
 
-        } catch (JobExecutionException e) {
-            // 任务执行出错
-            markError(context.getJobDetail());
-        }
-
-
-        // 执行完成后马上删除任务本身
-        try {
-            delJob(context.getJobDetail());
         } catch (SchedulerException e) {
-            throw new JobExecutionException("delete job failed");
+            // 删除任务失败
+            e.printStackTrace();
+            errLogger.error(e.toString());
         }
+
     }
 
 

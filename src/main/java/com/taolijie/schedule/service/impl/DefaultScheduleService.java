@@ -6,7 +6,7 @@ import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.constant.TaskStatus;
 import com.taolijie.schedule.dao.mapper.schedule.TaskModelMapper;
 import com.taolijie.schedule.exception.InvalidJobNameException;
-import com.taolijie.schedule.job.DefaultRunOnceJob;
+import com.taolijie.schedule.job.RunOnceJob;
 import com.taolijie.schedule.model.TaskModel;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
@@ -122,7 +122,7 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     private JobDetail makeJobDetail(String id, JobDataMap map) {
         map.put("id", Integer.valueOf(id));
 
-        return JobBuilder.newJob(DefaultRunOnceJob.class)
+        return JobBuilder.newJob(RunOnceJob.class)
                 .withIdentity(id, Config.JOB_GROUP)
                 .setJobData(map)
                 .build();
