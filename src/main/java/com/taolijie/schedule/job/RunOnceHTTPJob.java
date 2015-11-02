@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by whf on 9/30/15.
  */
 @Component
-public class RunOnceJob extends HTTPJob implements ApplicationContextAware {
+public class RunOnceHTTPJob extends HTTPJob implements ApplicationContextAware {
     protected static ApplicationContext ctx;
 
     private static ScheduleService scheduleService;

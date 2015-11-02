@@ -6,11 +6,11 @@ import com.taolijie.schedule.constant.Config;
 import com.taolijie.schedule.constant.TaskStatus;
 import com.taolijie.schedule.dao.mapper.schedule.TaskModelMapper;
 import com.taolijie.schedule.exception.InvalidJobNameException;
-import com.taolijie.schedule.job.RunOnceJob;
+import com.taolijie.schedule.job.RoutineHTTPJob;
+import com.taolijie.schedule.job.RunOnceHTTPJob;
 import com.taolijie.schedule.model.TaskModel;
 import com.taolijie.schedule.service.ScheduleService;
 import com.taolijie.schedule.util.StringUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +64,7 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
 
         saveTask(host, port, path, method, startAt, parmMap, map);
 
-        JobDetail jd = makeJobDetail(parmMap.get("taskId"), map);
+        JobDetail jd = makeJobDetail(parmMap.get("taskId"), map, RunOnceHTTPJob.class);
 
         // 创建trigger
         Trigger trigger = makeTrigger(parmMap.get("taskId"), startAt);
@@ -108,7 +107,7 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         map.put("callback.method", task.getCallbackMethod());
 
 
-        JobDetail jd = makeJobDetail(task.getId().toString(), map);
+        JobDetail jd = makeJobDetail(task.getId().toString(), map, RunOnceHTTPJob.class);
 
         // 创建trigger
         Trigger trigger = makeTrigger(task.getId().toString(), task.getExeAt());
@@ -119,10 +118,10 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
 
     }
 
-    private JobDetail makeJobDetail(String id, JobDataMap map) {
+    private JobDetail makeJobDetail(String id, JobDataMap map, Class<? extends Job> jobClass) {
         map.put("id", Integer.valueOf(id));
 
-        return JobBuilder.newJob(RunOnceJob.class)
+        return JobBuilder.newJob(jobClass)
                 .withIdentity(id, Config.JOB_GROUP)
                 .setJobData(map)
                 .build();
@@ -170,7 +169,8 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
             map.put("callback.path", task.getCallbackPath());
             map.put("callback.method", task.getCallbackMethod());
 
-            JobDetail jd = makeJobDetail(task.getId().toString(), map);
+            JobDetail jd = makeJobDetail(task.getId().toString(), map, RoutineHTTPJob.class);
+
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(task.getId().toString(), Config.TRIGGER_GROUP)
                     .withSchedule(CronScheduleBuilder.cronSchedule(task.getCronExp()))
