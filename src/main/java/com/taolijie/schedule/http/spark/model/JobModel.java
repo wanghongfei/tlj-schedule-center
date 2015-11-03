@@ -1,5 +1,7 @@
 package com.taolijie.schedule.http.spark.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 /**
@@ -12,6 +14,7 @@ public class JobModel {
 
     private String status;
 
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date exeAt;
 
     private String cronExp;

@@ -1,6 +1,7 @@
 package com.taolijie.schedule.http.spark.service;
 
 import com.taolijie.schedule.http.spark.model.JobModel;
+import com.taolijie.schedule.http.spark.model.JsonList;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class MonitorService {
      * 得到当前所有状态的job
      * @throws SchedulerException
      */
-    public List<JobModel> getJobList() throws SchedulerException {
+    public JsonList<JobModel> getJobList() throws SchedulerException {
         Set<JobKey> keySet = scheduler.getJobKeys(GroupMatcher.anyJobGroup());
 
         List<JobModel> jobList = new ArrayList<>(keySet.size() + 3);
@@ -47,6 +48,6 @@ public class MonitorService {
             jobList.add(model);
         }
 
-        return jobList;
+        return new JsonList<>(jobList);
     }
 }
