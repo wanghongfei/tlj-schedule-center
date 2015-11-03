@@ -5,6 +5,6 @@
     "callbackHost": "127.0.0.1",
     "callbackPort": 8080,
     "callbackMethod": "GET",
-    "cronExp": "0 1 23 * * ?"
+    "cronExp": "0 1 0 * * ?"
   }
 ]
