@@ -22,6 +22,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -156,8 +158,14 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
         appLog.info("Reading routine job config file...");
 
         // 从配置文件中读取日常任务
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        String taskStr = StringUtils.stream2String(cl.getResourceAsStream("routine-job.json"));
+        File file = new File("routine-job.json");
+        // 配置文件不存在
+        if (false == file.exists()) {
+            appLog.warn("routine-job.json does not exist!");
+            return 0;
+        }
+
+        String taskStr = StringUtils.stream2String(new FileInputStream(file));
         List<TaskModel> taskList = JSON.parseArray(taskStr, TaskModel.class);
 
         appLog.info("Starting routine job...");
