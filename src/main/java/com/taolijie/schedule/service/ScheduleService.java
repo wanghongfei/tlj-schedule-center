@@ -43,4 +43,10 @@ public interface ScheduleService {
      * @return
      */
     int loadRoutineJob() throws SchedulerException, IOException;
+
+    /**
+     * 载入执行时间已到但还没有执行的任务
+     * @return
+     */
+    int loadMissJob() throws SchedulerException;
 }

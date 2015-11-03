@@ -49,6 +49,8 @@ public class Bootstrap {
         service.loadJobs();
         // 载入日常任务
         service.loadRoutineJob();
+        // 载入错过的任务
+        service.loadMissJob();
     }
 
 

@@ -302,6 +302,12 @@
             <if test="callbackMethod != null">
                 AND callback_method = #{callbackMethod}
             </if>
+
+            <if test="startTime != null">
+                <![CDATA[
+                AND exe_at < #{startTime}
+                ]]>
+            </if>
         </where>
     </select>
 </mapper>

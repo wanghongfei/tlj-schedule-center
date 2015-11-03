@@ -186,6 +186,29 @@ public class DefaultScheduleService implements ScheduleService, ApplicationConte
     }
 
     @Override
+    public int loadMissJob() throws SchedulerException {
+        appLog.info("check missed task");
+
+        // todo
+        List<TaskModel> missedList = selectMissedTask();
+        for (TaskModel task : missedList) {
+            loadSingleJob(task);
+        }
+
+
+        appLog.info("Done loading missed task");
+        return missedList.size();
+    }
+
+    private List<TaskModel> selectMissedTask() {
+        TaskModel example = new TaskModel();
+        example.setStartTime(new Date());
+        example.setStatus(TaskStatus.WAIT.code());
+
+        return taskMapper.findBy(example);
+    }
+
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.ctx = applicationContext;
     }
