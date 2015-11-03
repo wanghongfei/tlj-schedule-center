@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "callbackPath": "/api/pv/all",
+    "callbackPath": "/api/schedule/pv/all",
     "callbackHost": "127.0.0.1",
     "callbackPort": 8080,
     "callbackMethod": "GET",
