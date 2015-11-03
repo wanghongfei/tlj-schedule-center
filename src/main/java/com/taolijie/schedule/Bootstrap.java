@@ -1,17 +1,14 @@
 package com.taolijie.schedule;
 
+import com.taolijie.schedule.http.spark.SparkInitializer;
 import com.taolijie.schedule.service.ScheduleService;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * 程序启动类
@@ -33,6 +30,10 @@ public class Bootstrap {
             e.printStackTrace();
             errLog.error("job loading failed!!");
         }
+
+        log.info("Starting Spark");
+        SparkInitializer sparkInit = loadSpark("sparkInitializer", ctx);
+        sparkInit.start(9000);
 
         log.info("all done. ^_^|");
 
@@ -63,6 +64,10 @@ public class Bootstrap {
         ApplicationContext ctx = new ClassPathXmlApplicationContext(conf);
 
         return ctx;
+    }
+
+    private static SparkInitializer loadSpark(String beanName, ApplicationContext ctx) {
+        return (SparkInitializer) ctx.getBean(beanName);
     }
 
 
