@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JVM_ARG='-Xms300m -Xmx300m -Xmn160m -XX:+UseG1GC'
+JVM_ARG='-Xms200m -Xmx200m -XX:+UseG1GC'
 
 if [ "$1" != "" ]; then
     JVM_ARG=$1
