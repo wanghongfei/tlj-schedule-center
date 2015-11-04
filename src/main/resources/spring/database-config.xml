@@ -15,7 +15,9 @@
         <property name="username" value="root" />
         <property name="password" value="111111" />
 
-        <property name="maxActive" value="30" />
+        <property name="maxActive" value="15" />
+        <property name="maxIdle" value="10" />
+        <property name="minIdle" value="5" />
 
         <property name="testOnBorrow" value="true" />
         <property name="testWhileIdle" value="true" />
