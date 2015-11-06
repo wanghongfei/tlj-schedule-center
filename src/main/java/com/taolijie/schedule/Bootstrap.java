@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 
 /**
  * 程序启动类
@@ -40,6 +43,12 @@ public class Bootstrap {
         int port = getPortFromArgs(args);
         SparkInitializer sparkInit = loadSpark("sparkInitializer", ctx);
         sparkInit.start(port);
+
+        try {
+            writePid();
+        } catch (IOException e) {
+            errLog.error("writing PID to file [my-pid] Failed");
+        }
 
         log.info("all done. ^_^|");
 
@@ -87,5 +96,18 @@ public class Bootstrap {
         }
 
         return port;
+    }
+
+    /**
+     * 把当前进行pid写入到文件中
+     * @throws IOException
+     */
+    private static void writePid() throws IOException {
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        String pid = name.split("@")[0];
+
+        FileOutputStream fos = new FileOutputStream("my-pid");
+        fos.write(pid.getBytes());
+        fos.close();
     }
 }
