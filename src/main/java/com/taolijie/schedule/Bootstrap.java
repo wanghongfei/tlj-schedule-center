@@ -82,7 +82,7 @@ public class Bootstrap {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException ex) {
-                log.info("invalid port {}, using default:{}", args[0], DEF_PORT);
+                log.info("invalid port [{}], using default:{}", args[0], DEF_PORT);
             }
         }
 

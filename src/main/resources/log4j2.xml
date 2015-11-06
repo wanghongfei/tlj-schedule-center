@@ -39,6 +39,9 @@
         <Logger name="com.taolijie.schedule" level="debug">
             <AppenderRef ref="info-appender" />
         </Logger>
+        <Logger name="spark" level="info">
+            <AppenderRef ref="info-appender" />
+        </Logger>
 
         <Logger name="ERROR-LOGGER">
             <AppenderRef ref="error-appender" />

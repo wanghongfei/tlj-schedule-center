@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.taolijie</groupId>
-    <artifactId>schdule-center</artifactId>
+    <artifactId>schedule-center</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <description>桃李街任务调度中心</description>
@@ -212,6 +212,7 @@
 
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>executable</shadedClassifierName>
+                            <finalName>sc-exe</finalName>
                         </configuration>
                     </execution>
                 </executions>
