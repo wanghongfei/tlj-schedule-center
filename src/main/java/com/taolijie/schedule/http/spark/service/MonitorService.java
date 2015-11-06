@@ -1,13 +1,16 @@
 package com.taolijie.schedule.http.spark.service;
 
+import com.taolijie.schedule.dao.mapper.schedule.TaskModelMapper;
 import com.taolijie.schedule.http.spark.model.JobModel;
 import com.taolijie.schedule.http.spark.model.JsonList;
+import com.taolijie.schedule.model.TaskModel;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -19,8 +22,11 @@ public class MonitorService {
     @Autowired
     private Scheduler scheduler;
 
+    @Autowired
+    private TaskModelMapper taskMapper;
+
     /**
-     * 得到当前所有状态的job
+     * 得到当前正在调度的job
      * @throws SchedulerException
      */
     public JsonList<JobModel> getJobList() throws SchedulerException {
@@ -49,5 +55,17 @@ public class MonitorService {
         }
 
         return new JsonList<>(jobList);
+    }
+
+    /**
+     * 查询任务记录(不包含crontab任务)
+     * @param start
+     * @param end
+     * @return
+     */
+    public JsonList<TaskModel> getHistory(Date start, Date end) {
+        List<TaskModel> list = taskMapper.selectByInterval(start, end);
+
+        return new JsonList<>(list);
     }
 }

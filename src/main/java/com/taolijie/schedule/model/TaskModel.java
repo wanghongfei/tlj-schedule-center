@@ -50,6 +50,8 @@ public class TaskModel {
     // 只查询使用
     @JSONField(serialize = false)
     private Date startTime;
+    @JSONField(serialize = false)
+    private Date endTime;
 
     public Integer getId() {
         return id;
@@ -283,6 +285,14 @@ public class TaskModel {
         sb.append(", memo='").append(memo).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     /**

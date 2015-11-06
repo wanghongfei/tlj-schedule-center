@@ -253,6 +253,18 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
+    <select id="selectByInterval" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            task
+        WHERE
+        <![CDATA[
+            created_time >= #{start} AND created_time <= #{end}
+        ]]>
+
+    </select>
+
     <select id="findBy" resultMap="BaseResultMap">
         SELECT
             <include refid="Base_Column_List"/>

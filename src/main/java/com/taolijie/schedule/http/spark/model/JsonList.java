@@ -7,7 +7,6 @@ import java.util.List;
  * Created by whf on 11/3/15.
  */
 public class JsonList<T> {
-    public static JsonList obj = new JsonList<>(null);
 
     private List<T> list;
 

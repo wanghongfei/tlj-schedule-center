@@ -3,6 +3,9 @@ package com.taolijie.schedule.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by whf on 9/30/15.
@@ -46,5 +49,14 @@ public class StringUtils {
         }
 
         return sb.toString();
+    }
+
+    public static Date str2Date(String str) throws ParseException {
+        if (null == str) {
+            return null;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.parse(str);
     }
 }
