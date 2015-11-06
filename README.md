@@ -31,6 +31,6 @@ ScheduleCenter通过`Quartz`框架实现任务调度，通过`Redis`与任务发
 
 ## 构建执行
 ```
-mvn clean install
+mvn clean package
 ./run.sh [web服务监听端口号]
 ```
