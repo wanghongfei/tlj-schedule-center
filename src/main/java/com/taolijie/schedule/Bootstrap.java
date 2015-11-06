@@ -15,8 +15,13 @@ import java.io.IOException;
  * Created by whf on 9/30/15.
  */
 public class Bootstrap {
-    private static Logger log = LoggerFactory.getLogger("INFO-LOGGER");
+    private static Logger log = LoggerFactory.getLogger(Bootstrap.class);
     private static Logger errLog = LoggerFactory.getLogger("ERROR-LOGGER");
+
+    /**
+     * web服务默认端口
+     */
+    public static final int DEF_PORT = 9000;
 
     public static void main(String[] args) {
         ApplicationContext ctx = initCtx("spring/spring-ctx.xml");
@@ -32,8 +37,9 @@ public class Bootstrap {
         }
 
         log.info("Starting Spark");
+        int port = getPortFromArgs(args);
         SparkInitializer sparkInit = loadSpark("sparkInitializer", ctx);
-        sparkInit.start(9000);
+        sparkInit.start(port);
 
         log.info("all done. ^_^|");
 
@@ -70,5 +76,16 @@ public class Bootstrap {
         return (SparkInitializer) ctx.getBean(beanName);
     }
 
+    private static int getPortFromArgs(String[] args) {
+        int port = DEF_PORT;
+        if (args.length >= 1) {
+            try {
+                port = Integer.valueOf(args[0]);
+            } catch (NumberFormatException ex) {
+                log.info("invalid port {}, using default:{}", args[0], DEF_PORT);
+            }
+        }
 
+        return port;
+    }
 }

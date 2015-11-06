@@ -34,10 +34,13 @@
 
     <Loggers>
         <Logger name="INFO-LOGGER" level="debug">
+            <AppenderRef ref="info-appender" />
+        </Logger>
+        <Logger name="com.taolijie.schedule" level="debug">
+            <AppenderRef ref="info-appender" />
         </Logger>
 
         <Logger name="ERROR-LOGGER">
-            <Level value="debug" />
             <AppenderRef ref="error-appender" />
         </Logger>
 
